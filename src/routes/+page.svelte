@@ -206,8 +206,8 @@
 					<span class="swap-on icon-[iconamoon--close-light] fill-current" style="width: 32px; height: 32px;"></span>
 				</label>
 				<a href="#" class="group ms-2 flex md:me-24">
-					<img src="./favicon.svg" class="me-2 w-20 sm:w-8" alt="Collector Logo" />
-					<span class="text-md hidden self-center font-semibold sm:block">Collector</span>
+					<img src="./favicon.svg" class="me-2 w-20 sm:w-8" alt="清绝的导航站 Logo" />
+					<span class="text-md hidden self-center font-semibold sm:block">清绝的导航站</span>
 				</a>
 			</div>
 
