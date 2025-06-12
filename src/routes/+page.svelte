@@ -206,8 +206,8 @@
 					<span class="swap-on icon-[iconamoon--close-light] fill-current" style="width: 32px; height: 32px;"></span>
 				</label>
 				<a href="#" class="group ms-2 flex md:me-24">
-					<img src="./favicon.svg" class="me-2 w-20 sm:w-8" alt="清绝的导航站 Logo" />
-					<span class="text-md hidden self-center font-semibold sm:block">清绝的导航站</span>
+					<img src="./favicon.svg" class="me-2 w-20 sm:w-8" alt="Collector Logo" />
+					<span class="text-md hidden self-center font-semibold sm:block">Collector</span>
 				</a>
 			</div>
 
@@ -272,7 +272,7 @@
 					<span>All Item</span>
 				</a>
 			</li>
-			{#each formatedData as item (item.title)}
+			{#each formatedData as item}
 				{#if item.type === 'folder'}
 					<li>
 						<a
@@ -298,7 +298,7 @@
 					<a href="#" class="cursor-pointer" onclick={() => handleFolderClick('')}> Root </a>
 				</li>
 
-				{#each selectedFolder as item, i (item + i)}
+				{#each selectedFolder as item, i}
 					<li>
 						<a href="#" class="cursor-pointer" onclick={() => handleFolderClick(selectedFolder.slice(0, i + 1).join('%'))}>
 							{item}
@@ -309,48 +309,63 @@
 		</div>
 
 		<div class="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-8 md:gap-4">
-			{#each filteredResults as item (item.item ? item.item.url : item.url)}
-    {#if item.type === 'folder'}
-        <a
-            class="group col-span-1 flex cursor-pointer flex-col items-center justify-center"
-            href="#"
-            onclick={() => handleFolderClick((item.path ? item.path + '%' : '') + item.title)}
-        >
-            <span class="icon-[ph--folder-open-fill] transition-transform duration-300 group-hover:scale-110" style="width: 100px; height: 100px;"></span>
-            <p class="w-full overflow-hidden truncate whitespace-nowrap text-center text-sm text-secondary">{item.title}</p>
-        </a>
-    {:else}
-        {@const site = item.item || item}
-        <div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
-            <a class="group flex cursor-pointer items-center gap-2" href={site.url} target="_blank">
-                <img
-                    src={site.icon || `https://www.google.com/s2/favicons?domain=${new URL(site.url).hostname}&sz=32`}
-                    alt="favicon"
-                    class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
-                />
-                <div class="min-w-0 flex-1">
-                    <h2 class="text-md overflow-hidden truncate whitespace-nowrap">
-                        {#if item.matches?.find((m) => m.key === 'title')}
-                            {@html highlightText(site.title, item.matches.find((m) => m.key === 'title').indices)}
-                        {:else}
-                            {site.title}
-                        {/if}
-                    </h2>
-                    <p class="overflow-hidden truncate whitespace-nowrap text-sm text-secondary">{site.url}</p>
-                </div>
-            </a>
-            <div class="tooltip" data-tip={site.description}>
-                <p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">
-                    {#if item.matches?.find((m) => m.key === 'description')}
-                        {@html highlightText(site.description, item.matches.find((m) => m.key === 'description').indices)}
-                    {:else}
-                        {site.description}
-                    {/if}
-                </p>
-            </div>
-        </div>
-    {/if}
-{/each}
+			{#each filteredResults as item}
+				{#if searchResults.length > 0}
+					<div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
+						<a class="group flex cursor-pointer items-center gap-2" href={item.item.url} target="_blank">
+							<img
+								src={`https://www.google.com/s2/favicons?domain=${item.item.url}&sz=32`}
+								alt="favicon"
+								class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
+							/>
+							<div class="min-w-0 flex-1">
+								<h2 class="text-md overflow-hidden truncate whitespace-nowrap">
+									{@html item.matches?.find((m) => m.key === 'title')
+										? highlightText(item.item.title, item.matches.find((m) => m.key === 'title').indices)
+										: item.item.title}
+								</h2>
+								<p class="overflow-hidden truncate whitespace-nowrap text-sm text-secondary">
+									{item.item.url}
+								</p>
+							</div>
+						</a>
+						<div class="tooltip" data-tip={item.item.description}>
+							<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">
+								{@html item.matches?.find((m) => m.key === 'description')
+									? highlightText(item.item.description, item.matches.find((m) => m.key === 'description').indices)
+									: item.item.description}
+							</p>
+						</div>
+					</div>
+				{:else if item.type === 'folder'}
+					<a
+						class="group col-span-1 flex cursor-pointer flex-col items-center justify-center"
+						href="#"
+						onclick={() => handleFolderClick(item.path + '%' + item.title)}
+					>
+						<span class="icon-[ph--folder-open-fill] transition-transform duration-300 group-hover:scale-110" style="width: 100px; height: 100px;"></span>
+
+						<p class="w-full overflow-hidden truncate whitespace-nowrap text-center text-sm text-secondary">{item.title}</p>
+					</a>
+				{:else}
+					<div class="col-span-2 rounded-lg border border-base-200 bg-base-100 p-3">
+						<a class="group flex cursor-pointer items-center gap-2" href={item.url} target="_blank">
+							<img
+								src={`https://www.google.com/s2/favicons?domain=${item.url}&sz=32`}
+								alt="favicon"
+								class="h-8 w-8 rounded-full transition-transform duration-500 group-hover:rotate-[360deg]"
+							/>
+							<div class="min-w-0 flex-1">
+								<h2 class="text-md overflow-hidden truncate whitespace-nowrap">{item.title}</h2>
+								<p class="overflow-hidden truncate whitespace-nowrap text-sm text-secondary">{item.url}</p>
+							</div>
+						</a>
+						<div class="tooltip" data-tip={item.description}>
+							<p class="mt-2 line-clamp-3 text-justify text-sm text-secondary underline decoration-dotted underline-offset-2">{item.description}</p>
+						</div>
+					</div>
+				{/if}
+			{/each}
 		</div>
 	</div>
 
